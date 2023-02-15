@@ -1,0 +1,4 @@
+(In|on) (your|the) shopping list there {{count}}.
+(In|on) (your|the) shopping list you have {{short_count}}.
+There {{count}} on your shopping list.
+
