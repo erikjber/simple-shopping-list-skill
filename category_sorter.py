@@ -8,18 +8,21 @@ autocategories = {"cheese": "cheese",
                   "toilet": "cleaning",
                   "washing": "cleaning",
                   "soap": "cleaning",
+                  "fish paste": "roe",
                   "spray": "cleaning"}
 
 capture_categories = ["vegetable", "plant_material", "plant", "fruit", "bakery", "baked_goods", "meat", "poultry",
                       "cheese", "roe", "mexican", "olive oil", "pasta", "sauce", "grain", "salt", "preservative",
                       "dairy_product", "eggs", "spread", "orange juice", "juice", "container", "pizza", "chips", "ice cream", "fish",
-                      "seafood", "nutriment", "sweetening", "flour", "porridge", "tea", "coffee", "peanut butter",
+                      "seafood", "nutriment", "sweetening", "flour", "porridge", "tea", "coffee", "peanut butter", "jam",
                       "cleaning", "cleansing_agent", "toiletry", "snacks", "sweet"]
 
 
 def classify_term(item, capture_categories: [str]) -> str:
     """Find a match in a string with several words."""
     items = item.split(" ")
+    # the last word is likely to be most meaningful
+    items = reversed(items)
     for item in items:
         tmp = do_recursive_classification(item, capture_categories)
         if tmp:
