@@ -11,7 +11,7 @@ autocategories = {"cheese": "cheese",
                   "fish paste": "roe",
                   "spray": "cleaning"}
 
-capture_categories = ["vegetable", "plant_material", "plant", "fruit", "bakery", "baked_goods", "meat", "poultry",
+capture_categories = ["vegetable", "plant_material", "plant", "salad", "fruit", "bakery", "baked_goods", "meat", "poultry",
                       "cheese", "roe", "mexican", "olive oil", "pasta", "sauce", "grain", "salt", "preservative",
                       "dairy_product", "eggs", "spread", "orange juice", "juice", "container", "pizza", "chips", "ice cream", "fish",
                       "seafood", "nutriment", "sweetening", "flour", "porridge", "tea", "coffee", "peanut butter", "jam",
