@@ -2,6 +2,7 @@ from mycroft import MycroftSkill, intent_file_handler
 from .database import Database
 from escpos.connections import getNetworkPrinter
 from .category_sorter import sort_items
+from Levenshtein import distance
 
 LIST_NAME = "shopping"
 
@@ -85,8 +86,27 @@ class SimpleShoppingList(MycroftSkill):
         self._ensure_list_exists()
         if self.db.list_empty("shopping"):
             self.speak_dialog('list_is_empty')
-        else:
-            self.delete_item(item)
+        elif item:
+            if not self.db.item_exists("shopping",item):
+                data = {"item":item}
+                self.speak_dialog('not_found',data)
+                # Find the item in the database that most closely match the input
+                min_dist = float('inf')
+                min_word = None
+                entries = self.db.read_items("shopping")
+                for entry in entries:
+                    dist = distance(item,entry)
+                    if dist < min_dist:
+                        min_dist = dist
+                        min_word = entry
+                data["item"] = min_word
+                resp = self.ask_yesno("did_you_mean",data)
+                if resp == "yes":
+                    self.db.del_item("shopping", min_word)
+                    self.speak_dialog("deleted", data)
+            else:
+                self.delete_item(item)
+
 
 
     def delete_item(self, item: str):
