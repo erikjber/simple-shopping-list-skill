@@ -13,12 +13,23 @@ class SimpleShoppingList(MycroftSkill):
     def __init__(self):
         MycroftSkill.__init__(self)
         self.db = Database()
-        self.keep = gkeepapi.Keep()
+        self.keep = None
         json_path = join(dirname(__file__),"auth.txt")
         with open(json_path, 'r') as json_file:
-            auth = json.load(json_file)
-        self.keep.resume(auth["email"],auth["token"])
-        self.sync_keep_list()
+            self.auth = json.load(json_file)
+        self._init_keep()
+        try:
+            self.sync_keep_list()
+        except:
+            self.keep = None
+
+    def _init_keep(self):
+        try:
+            self.keep = gkeepapi.Keep()
+            self.keep.resume(self.auth["email"],self.auth["token"])
+        except:
+            self.keep = None
+
 
     def _ensure_list_exists(self):
         """If the list does not exits, create it."""
@@ -157,6 +168,8 @@ class SimpleShoppingList(MycroftSkill):
         resp = self.ask_yesno('confirm.clear')
         if resp == 'yes':
             self.db.del_list("shopping")
+            if not self.keep:
+                self._init_keep()
             self.keep.sync()
             shoppinglist = next(self.keep.find(query="shoppinglist", archived=False, trashed=False), None)
             for item in shoppinglist.items:
@@ -175,6 +188,8 @@ class SimpleShoppingList(MycroftSkill):
         return None
 
     def sync_delete(self, item: str):
+        if not self.keep:
+            self._init_keep()
         self.keep.sync()
         shoppinglist = next(self.keep.find(query="shoppinglist", archived=False, trashed=False), None)
         remote_item = self.find_item(shoppinglist,item)
@@ -183,6 +198,8 @@ class SimpleShoppingList(MycroftSkill):
 
     def sync_keep_list(self):
         """Sync the local database and the keep list."""
+        if not self.keep:
+            self._init_keep()
         self.keep.sync()
         shoppinglist = next(self.keep.find(query="shoppinglist", archived=False, trashed=False), None)
         if not shoppinglist:
