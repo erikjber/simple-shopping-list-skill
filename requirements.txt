@@ -1,0 +1,4 @@
+nltk>=3.8.1
+python-printer-escpos>=0.0.4
+Levenshtein>=0.21.0
+gkeepapi>=0.14.2
